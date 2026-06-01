@@ -1,0 +1,2 @@
+Source Name	Characteristics[Organism]	Term Source REF	Term Accession Number	Protocol REF	Sample Name
+GCF_000227135.1-source	Leishmania donovani	NCBITaxon	http://purl.obolibrary.org/obo/NCBITaxon_5661	sample collection	GCF_000227135.1-sample

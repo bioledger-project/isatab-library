@@ -1,0 +1,7 @@
+Sample Name	Protocol REF	Raw Data File
+Ld_CL_SRR7133733	nucleic acid sequencing	SRR7133733_1.fastq.gz
+Ld_CL_SRR7133733	nucleic acid sequencing	SRR7133733_2.fastq.gz
+Ld_IV_SRR7133731	nucleic acid sequencing	SRR7133731_1.fastq.gz
+Ld_IV_SRR7133731	nucleic acid sequencing	SRR7133731_2.fastq.gz
+Ld_VL_SRR7133732	nucleic acid sequencing	SRR7133732_1.fastq.gz
+Ld_VL_SRR7133732	nucleic acid sequencing	SRR7133732_2.fastq.gz

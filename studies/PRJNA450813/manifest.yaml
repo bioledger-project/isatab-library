@@ -1,0 +1,28 @@
+study_type: experimental_data
+insdc_accession: PRJNA450813
+organism: Leishmania donovani
+files:
+- filename: SRR7133733_1.fastq.gz
+  url: https://ftp.sra.ebi.ac.uk/vol1/fastq/SRR713/003/SRR7133733/SRR7133733_1.fastq.gz
+  format: fastq
+  md5: eb5b23184850d93613eca1cab70e4086
+- filename: SRR7133733_2.fastq.gz
+  url: https://ftp.sra.ebi.ac.uk/vol1/fastq/SRR713/003/SRR7133733/SRR7133733_2.fastq.gz
+  format: fastq
+  md5: bd7e98be7c829d8846dcf2c0607f6f1d
+- filename: SRR7133732_1.fastq.gz
+  url: https://ftp.sra.ebi.ac.uk/vol1/fastq/SRR713/002/SRR7133732/SRR7133732_1.fastq.gz
+  format: fastq
+  md5: a7087b433dcbd59b804b13d0f2b38cb0
+- filename: SRR7133732_2.fastq.gz
+  url: https://ftp.sra.ebi.ac.uk/vol1/fastq/SRR713/002/SRR7133732/SRR7133732_2.fastq.gz
+  format: fastq
+  md5: e373dea6b1ba4bd5869d4b977a941a1e
+- filename: SRR7133731_1.fastq.gz
+  url: https://ftp.sra.ebi.ac.uk/vol1/fastq/SRR713/001/SRR7133731/SRR7133731_1.fastq.gz
+  format: fastq
+  md5: 6a08d0f9dbebff05bc988ff68a9aa4e7
+- filename: SRR7133731_2.fastq.gz
+  url: https://ftp.sra.ebi.ac.uk/vol1/fastq/SRR713/001/SRR7133731/SRR7133731_2.fastq.gz
+  format: fastq
+  md5: 8857855adac8196c76a6b5d2465d5fe0

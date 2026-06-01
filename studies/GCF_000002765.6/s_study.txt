@@ -1,0 +1,2 @@
+Source Name	Characteristics[Organism]	Term Source REF	Term Accession Number	Protocol REF	Sample Name
+GCF_000002765.6-source	Plasmodium falciparum 3D7	NCBITaxon	http://purl.obolibrary.org/obo/NCBITaxon_36329	sample collection	GCF_000002765.6-sample

@@ -1,0 +1,3 @@
+Sample Name	Protocol REF	Derived Data File
+GCF_000227135.1-sample	genome assembly	GCF_000227135.1_ASM22713v2_genomic.fna.gz
+GCF_000227135.1-sample	genome assembly	GCF_000227135.1_ASM22713v2_genomic.gff.gz

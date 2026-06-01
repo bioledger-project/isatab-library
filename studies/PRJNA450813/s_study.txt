@@ -1,0 +1,4 @@
+Source Name	Characteristics[Organism]	Term Source REF	Term Accession Number	Protocol REF	Sample Name
+Ld_CL_SRR7133733-source	Leishmania donovani	NCBITaxon	http://purl.obolibrary.org/obo/NCBITaxon_5661	sample collection	Ld_CL_SRR7133733
+Ld_IV_SRR7133731-source	Leishmania donovani	NCBITaxon	http://purl.obolibrary.org/obo/NCBITaxon_5661	sample collection	Ld_IV_SRR7133731
+Ld_VL_SRR7133732-source	Leishmania donovani	NCBITaxon	http://purl.obolibrary.org/obo/NCBITaxon_5661	sample collection	Ld_VL_SRR7133732

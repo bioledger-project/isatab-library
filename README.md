@@ -7,9 +7,8 @@ manifests without re-authoring them.
 
 ## Status
 
-**Pre-alpha.** The directory layout and testing framework described below
-are the agreed plan; the repo is otherwise empty. Studies will be added
-as they're written and validated.
+**Alpha.** Three validated studies ship today (see [Studies](#studies)).
+More are added as they're authored and validated.
 
 ## Relationship to other repos
 
@@ -31,9 +30,23 @@ bioledger                  ← consumes studies at runtime
   in sources, assay technology type, etc. See the schema repo's README
   for the full contract.
 
-While `bioledger-isatab-schema` is still pre-extraction, CI here will
-import `bioledger.forges.isaforge.validate` directly from an editable
-`../bioledger` checkout.
+CI installs `bioledger-isatab-schema` from its own repo
+(`bioledger-project/isatab-schema`, checked out into `.schema`) and imports
+`bioledger_isatab_schema` to validate every committed study.
+
+## Studies
+
+| Directory | Type | Organism | Source |
+|---|---|---|---|
+| `GCF_000002765.6` | reference_genome | *Plasmodium falciparum* 3D7 | NCBI RefSeq (genome FASTA + GFF) |
+| `GCF_000227135.1` | reference_genome | *Leishmania donovani* BPK282A1 | NCBI RefSeq (genome FASTA + GFF) |
+| `PRJNA450813` | experimental_data | *Leishmania donovani* (CL/VL/IV) | ENA paired-end Illumina FASTQ |
+
+The *P. falciparum* experimental reads (ENA `PRJEB2146`, 3D7×HB3 cross) are
+**not yet included**: the 3D7 parent run cannot be identified from ENA
+metadata alone (sample aliases are internal Sanger IDs). It needs the
+Miles et al. 2016 Supplementary Table S1 mapping to pin the exact run
+accession(s) — tracked in Open Questions.
 
 ## Directory layout
 
@@ -46,12 +59,9 @@ bioledger-isatab-library/
 │   │   ├── i_investigation.txt          # required, ISA-Tab spec
 │   │   ├── s_*.txt                      # study table(s)
 │   │   ├── a_*.txt                      # assay table(s)
-│   │   ├── data/                        # optional small fixture files
-│   │   ├── manifest.yaml                # OPTIONAL: remote-file download spec
-│   │   └── README.md                    # short description, citation, license
+│   │   └── manifest.yaml                # REQUIRED: download URLs + checksums
 │   └── ...
-├── tests/
-│   └── conftest.py                      # path-addressable collector
+├── conftest.py                          # path-addressable collector (repo root)
 └── .github/workflows/ci.yml
 ```
 
@@ -62,15 +72,12 @@ bioledger-isatab-library/
   `Study Identifier` in `i_investigation.txt`. CI enforces this.
 - **ISA-Tab files live at the root of the study directory** so plain
   `isatools.load(study_dir)` works without any rewrites.
-- **Each study has a `README.md`** with:
-  - one-paragraph description,
-  - citation / DOI if applicable,
-  - data license,
-  - whether `data/` ships in-repo or via `manifest.yaml`.
-- **Bundled data goes in `data/`**, only when files are tiny (a few KB).
-- **Anything bigger goes in `manifest.yaml`** as a download spec
-  (URLs + checksums); the loader/CI fetches on demand. (Concrete
-  manifest schema TBD on first study that needs it.)
+- **The ISA-Tab assay table lists plain filenames** (no URLs), keeping it
+  standards-compliant and portable to any ISA tool.
+- **`manifest.yaml` is required and owns all downloads.** It is the single
+  source of truth for each file's `url` and checksum (`sha256` and/or
+  `md5`; at least one, verified after download). Every manifest `filename`
+  must also appear in the ISA-Tab assay/study tables — CI cross-checks this.
 - **No PII or restricted data**, ever. This repo is intended to be
   publishable.
 
@@ -99,21 +106,17 @@ For every `studies/<study_slug>/`:
 2. `validate_isatab(study_dir).is_valid` is true (zero ERROR-severity
    issues from the BioLedger-flavored validator).
 3. The directory name matches the study identifier.
-4. If `manifest.yaml` is present, it parses and every entry has a URL
-   and a checksum.
-5. If `data/` is present, every file referenced in the assay tables
-   resolves to either a `data/` file or an entry in `manifest.yaml`.
+4. `manifest.yaml` exists and passes `validate_manifest` (study_type set,
+   accession matches the directory name, every file has
+   filename/url/format and at least one checksum).
+5. Every manifest `filename` is referenced in the ISA-Tab assay/study
+   tables (`a_*.txt` / `s_*.txt`).
 6. (Soft) Warning-level checks (organism present, assay technology type
-   set, etc.) are reported but not initially failing. We tighten over
-   time.
+   set, accession/study_type prefix consistency) are reported but not
+   failing. We tighten over time.
 
-### Optional download-and-load check
-
-If a study declares `manifest.yaml` and CI has network access (default
-true on GitHub-hosted runners), one tiny smoke test downloads the first
-manifest entry, checks the checksum, and asserts
-`load_dataset_from_isatab(study_dir)` returns a non-empty `DataSet`.
-Skips with a clear reason if the network is unavailable.
+Validation is **offline**: no files are downloaded during CI. Checksums
+are verified at download time by `bioledger_isatab_schema.download_manifest`.
 
 ### Targeted runs (CLI)
 
@@ -131,8 +134,8 @@ pytest studies/<slug>/          # one study
 
 1. Compute changed paths via `git diff` against the PR base.
 2. Map them to touched study dirs (anything under `studies/<slug>/`
-   triggers that slug; changes to `tests/`, `pyproject.toml`, the
-   workflow, or the schema package trigger **everything**).
+   triggers that slug; changes to `conftest.py`, `pyproject.toml`, or the
+   workflow trigger **everything**).
 3. Run `pytest` against the touched dirs.
 
 On pushes to `main` and on a nightly schedule, run the full suite as a
@@ -150,15 +153,7 @@ pytest studies/<slug>/                            # one study
 
 ## Open questions / TODOs
 
-- [ ] Define `manifest.yaml` schema (URL, sha256, size, sample mapping)
-      on the first study that needs remote data.
+- [ ] Add the *P. falciparum* `PRJEB2146` experimental study once the 3D7
+      parent run accession(s) are pinned from Miles et al. 2016 Table S1.
 - [ ] Decide whether to ship a `family.yaml`-style grouping for related
       studies (e.g. all studies from one consortium); punt until needed.
-- [ ] Once `bioledger-isatab-schema` is extracted, switch CI from
-      `bioledger.forges.isaforge.validate` import to
-      `bioledger_isatab_schema`.
-- [ ] Scaffold `pyproject.toml`, `conftest.py` (path-addressable
-      collector), and the GitHub Actions workflow with changed-paths
-      discovery.
-- [ ] Add the first real study end-to-end as the reference
-      implementation.
