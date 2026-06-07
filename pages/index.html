@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BioLedger Study Library</title>
+  <style>
+    :root { --bg: #f8f9fa; --card: #fff; --border: #dee2e6; --accent: #198754; --text: #212529; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); padding: 2rem; max-width: 900px; margin: 0 auto; }
+    h1 { margin-bottom: 0.5rem; }
+    .subtitle { color: #6c757d; margin-bottom: 1.5rem; }
+    .search-box { width: 100%; padding: 0.75rem 1rem; font-size: 1rem; border: 1px solid var(--border); border-radius: 8px; margin-bottom: 1.5rem; }
+    .search-box:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(25,135,84,.15); }
+    .stats { color: #6c757d; font-size: 0.875rem; margin-bottom: 1rem; }
+    .card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 1rem 1.25rem; margin-bottom: 0.75rem; }
+    .card-header { display: flex; align-items: baseline; gap: 0.5rem; margin-bottom: 0.25rem; }
+    .card-name { font-weight: 600; font-size: 1.1rem; color: var(--accent); }
+    .card-type { font-size: 0.8rem; color: #6c757d; text-transform: uppercase; }
+    .card-desc { color: #495057; margin-bottom: 0.5rem; }
+    .card-meta { display: flex; flex-wrap: wrap; gap: 0.5rem; font-size: 0.8rem; }
+    .tag { background: #e9ecef; padding: 0.15rem 0.5rem; border-radius: 4px; }
+    .tag-org { background: #fff3cd; color: #664d03; }
+    .tag-fmt { background: #cfe2ff; color: #084298; }
+    .tag-type { background: #d1e7dd; color: #0f5132; }
+    .empty { text-align: center; padding: 3rem; color: #6c757d; }
+  </style>
+</head>
+<body>
+  <h1>BioLedger Study Library</h1>
+  <p class="subtitle">Search available ISA-Tab datasets and reference genomes</p>
+  <input type="text" class="search-box" id="search" placeholder="Search studies (e.g. Plasmodium, fastq, reference)..." autofocus>
+  <div class="stats" id="stats"></div>
+  <div id="results"></div>
+
+  <script>
+    let studies = [];
+
+    async function init() {
+      const res = await fetch('index.json');
+      studies = await res.json();
+      render(studies);
+    }
+
+    function render(items) {
+      const stats = document.getElementById('stats');
+      const results = document.getElementById('results');
+      stats.textContent = `${items.length} ${items.length !== 1 ? 'studies' : 'study'} found`;
+
+      if (items.length === 0) {
+        results.innerHTML = '<div class="empty">No studies match your search.</div>';
+        return;
+      }
+
+      results.innerHTML = items.map(s => `
+        <div class="card">
+          <div class="card-header">
+            <span class="card-name">${esc(s.accession)}</span>
+            <span class="card-type">${esc(s.study_type.replace('_', ' '))}</span>
+          </div>
+          <div class="card-desc">${esc(s.title || s.description || 'No description')}</div>
+          <div class="card-meta">
+            <span class="tag tag-org">${esc(s.organism)}</span>
+            ${s.formats.map(f => `<span class="tag tag-fmt">${esc(f)}</span>`).join('')}
+            <span class="tag">${s.file_count} file${s.file_count !== 1 ? 's' : ''}</span>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function esc(s) { const d = document.createElement('div'); d.textContent = s || ''; return d.innerHTML; }
+
+    document.getElementById('search').addEventListener('input', e => {
+      const q = e.target.value.toLowerCase().trim();
+      if (!q) { render(studies); return; }
+      const filtered = studies.filter(s =>
+        s.accession.toLowerCase().includes(q) ||
+        s.organism.toLowerCase().includes(q) ||
+        (s.title || '').toLowerCase().includes(q) ||
+        (s.description || '').toLowerCase().includes(q) ||
+        s.study_type.toLowerCase().includes(q) ||
+        s.formats.some(f => f.toLowerCase().includes(q))
+      );
+      render(filtered);
+    });
+
+    init();
+  </script>
+</body>
+</html>
