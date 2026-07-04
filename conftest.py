@@ -108,7 +108,22 @@ class StudyValidationItem(pytest.Item):
                     "ISA-Tab assay/study table (a_*.txt / s_*.txt)"
                 )
 
-        # 5. (Soft) warnings - report but don't fail.
+        # 5. Manifest filenames must not contain ambiguous periods.
+        #    NCBI accessions like GCF_000227135.1 break GATK sidecar naming.
+        from bioledger_isatab_schema.utils import stem_after_compression
+
+        for f in manifest.files:
+            stem = stem_after_compression(f.filename)
+            if "." in stem:
+                raise AssertionError(
+                    f"manifest filename '{f.filename}' contains a period "
+                    f"outside recognized extensions in '{stem}'. "
+                    f"Periods in basenames are misinterpreted as extension "
+                    f"separators by tools that derive sidecar/index names "
+                    f"(e.g. GATK .dict, .fai). Rename to use underscores."
+                )
+
+        # 6. (Soft) warnings - report but don't fail.
         warns = [i for i in result.issues if i.severity == Severity.WARNING]
         warns += [i["message"] for i in manifest_issues if i["severity"] == "warning"]
         if warns:

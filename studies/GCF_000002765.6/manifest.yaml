@@ -2,11 +2,11 @@ study_type: reference_genome
 assembly_accession: GCF_000002765.6
 organism: Plasmodium falciparum 3D7
 files:
-- filename: GCF_000002765.6_GCA_000002765_genomic.fna.gz
+- filename: GCF_000002765_6_GCA_000002765_genomic.fna.gz
   url: https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/002/765/GCF_000002765.6_GCA_000002765/GCF_000002765.6_GCA_000002765_genomic.fna.gz
   format: fasta
   md5: 56915bb838a94547e7e6c7a9ee6a750a
-- filename: GCF_000002765.6_GCA_000002765_genomic.gff.gz
+- filename: GCF_000002765_6_GCA_000002765_genomic.gff.gz
   url: https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/002/765/GCF_000002765.6_GCA_000002765/GCF_000002765.6_GCA_000002765_genomic.gff.gz
   format: gff
   md5: 05d414c1e278841ef44c1c333f029598

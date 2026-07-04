@@ -2,11 +2,11 @@ study_type: reference_genome
 assembly_accession: GCF_000227135.1
 organism: Leishmania donovani
 files:
-- filename: GCF_000227135.1_ASM22713v2_genomic.fna.gz
+- filename: GCF_000227135_1_ASM22713v2_genomic.fna.gz
   url: https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/227/135/GCF_000227135.1_ASM22713v2/GCF_000227135.1_ASM22713v2_genomic.fna.gz
   format: fasta
   md5: 31846f3cc757aecbc9263153d250909c
-- filename: GCF_000227135.1_ASM22713v2_genomic.gff.gz
+- filename: GCF_000227135_1_ASM22713v2_genomic.gff.gz
   url: https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/227/135/GCF_000227135.1_ASM22713v2/GCF_000227135.1_ASM22713v2_genomic.gff.gz
   format: gff
   md5: d0cc5494ad01d30293ed940e87dafc95
