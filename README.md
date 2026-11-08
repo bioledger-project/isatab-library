@@ -88,7 +88,8 @@ bioledger-isatab-library/
 2. Drop the ISA-Tab files into `studies/<study_slug>/`.
 3. Run `pytest studies/<study_slug>/` locally to validate.
 4. Add a `README.md` for the study capturing description, citation,
-   license.
+   license. (Recommended; the existing three studies predate this
+   convention and don't have one yet.)
 5. Open a PR. CI will validate just your study by default.
 
 ## Testing framework
@@ -128,25 +129,26 @@ pytest                          # all studies
 pytest studies/<slug>/          # one study
 ```
 
-### CI: changed-only by default, full sweep on main
+### CI: changed-only on PRs and pushes, nightly full sweep
 
 `.github/workflows/ci.yml` mirrors the toolspec-library workflow:
 
-1. Compute changed paths via `git diff` against the PR base.
+1. Compute changed paths via `git diff` (PR base on pull requests,
+   `before...HEAD` on pushes to `main`).
 2. Map them to touched study dirs (anything under `studies/<slug>/`
    triggers that slug; changes to `conftest.py`, `pyproject.toml`, or the
    workflow trigger **everything**).
 3. Run `pytest` against the touched dirs.
 
-On pushes to `main` and on a nightly schedule, run the full suite as a
-safety net (catches things like manifest URLs going dead).
+Only the **nightly schedule** runs the full suite as a safety net
+(catches things like manifest URLs going dead).
 
 ## Local development
 
 ```bash
 # from this repo's root
 pip install -e .                                  # installs test deps
-pip install -e ../bioledger-isatab-schema         # editable schema (or ../bioledger pre-extraction)
+pip install -e ../bioledger-isatab-schema         # editable schema
 pytest                                            # full sweep
 pytest studies/<slug>/                            # one study
 ```
